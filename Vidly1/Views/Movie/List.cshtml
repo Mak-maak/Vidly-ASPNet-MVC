@@ -1,0 +1,83 @@
+﻿@*@model IEnumerable<Vidly1.Models.Movie>*@
+@{
+    ViewBag.Title = "Movies";
+}
+
+<h2>Movies</h2>
+<br />
+@Html.ActionLink("New Movie", "New", "Movie", new { @class = "btn btn-primary", @style = "margin-left:15px;" })
+<div class="container">
+    <br />
+    <table id="movies" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Movies</th>
+                <th>Genre</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @*@foreach (var movie in @Model)
+                {
+                    <tr>
+                        <td>
+                            @movie.MovieName
+                        </td>
+                        <td>
+                            @movie.Genre.GenreName
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", "Movie", new { id = movie.Id }, new { @class = "btn btn-default" })
+                            @Html.ActionLink("Details", "Details", "Movie", new { id = movie.Id }, new { @class = "btn btn-default" })
+                        </td>
+                    </tr>
+                }*@
+        </tbody>
+    </table>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            var table = $("#movies").DataTable({
+                ajax: {
+                    url: "/api/movies",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "movieName",
+                    },
+                    {
+                        data: "genre.genreName"
+                    },
+                    {
+                        data: "id",
+                        render: function (data) {
+                            return "<a href='/movie/edit/"+ data +"' class='btn btn-default' style='margin:3px;'>Edit</a>"
+                                + "<a href='/movie/details/" + data + "' class='btn btn-default' style='margin:3px;'>Details</a>"
+                                + "<button style='margin:3px;' class='btn btn-danger js-delete' data-movie-id=" + data + ">Delete</button>";
+                        }
+                    }
+                ]
+            });
+
+            $("#movies").on("click", ".js-delete", function () {
+                var button = $(this);
+
+                bootbox.confirm("Are you sure you want to delete this movie?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/movies/" + button.attr("data-movies-id"),
+                            method: "DELETE",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,63 @@
+﻿@*@model IEnumerable<Vidly1.Models.Customer>*@
+@{
+    ViewBag.Title = "Customers";
+}
+
+<h2>Customers</h2>
+@*@if (!Model.Any())
+{
+    <p>We don't have any customers yet.</p>
+}
+else
+{ }*@
+    <div class="container">
+        <br />
+        <table id="customers" class="table table-bordered table-responsive table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Membership Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*@foreach (var customer in Model)
+                {
+                    <tr>
+                        <td>
+                            @customer.Name
+                        </td>
+                        <td>
+                            @customer.MembershipType.MembershipName
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", "Customer", new { id = customer.Id }, new { @class = "btn btn-default" })
+                            @Html.ActionLink("Details", "Details", "Customer", new { id = customer.Id }, new { @class = "btn btn-default" })
+                            <button class="btn btn-danger js-delete" data-customer-id="@customer.Id">Delete</button>
+                        </td>
+                    </tr>
+                }*@
+            </tbody>
+        </table>
+    </div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#customers").DataTable({
+                ajax: {
+                    url: "/api/customers",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                    },
+                    {
+                        data: "membershipType.name"
+                    }
+                ]
+            });
+        });
+    </script>
+}
